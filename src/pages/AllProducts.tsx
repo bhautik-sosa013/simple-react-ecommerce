@@ -5,7 +5,7 @@ import { Product } from "../models/Product";
 import { updateLoading } from "../redux/features/homeSlice";
 import SortProducts from "../components/SortProducts"
 import PaginatedProducts from "../components/PaginatedProducts";
-import { API_ENDPOINTS } from "../api";
+import { API_ENDPOINTS, apiFetch } from "../api";
 
 const AllProducts: FC = () => {
   const dispatch = useAppDispatch();
@@ -18,8 +18,7 @@ const AllProducts: FC = () => {
   useEffect(() => {
     const fetchProducts = () => {
       dispatch(updateLoading(true));
-      fetch(`${API_ENDPOINTS.PRODUCTS}?limit=500`)
-        .then((res) => res.json())
+      apiFetch<{ products: Product[] }>(`${API_ENDPOINTS.PRODUCTS}?limit=500`)
         .then(({ products }) => {
           dispatch(addProducts(products));
           dispatch(updateLoading(false));

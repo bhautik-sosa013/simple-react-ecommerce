@@ -3,7 +3,8 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { addCategories } from "../redux/features/productSlice";
 import { Link } from "react-router-dom";
 import { updateLoading } from "../redux/features/homeSlice";
-import { API_ENDPOINTS } from "../api";
+import { API_ENDPOINTS, apiFetch } from "../api";
+import { Category } from "../models/Category";
 
 const AllCategories: FC = () => {
   const dispatch = useAppDispatch();
@@ -16,8 +17,7 @@ const AllCategories: FC = () => {
   useEffect(() => {
     const fetchCategories = () => {
       dispatch(updateLoading(true));
-      fetch(`${API_ENDPOINTS.PRODUCTS_CATEGORIES}`)
-        .then((res) => res.json())
+      apiFetch<Category[]>(`${API_ENDPOINTS.PRODUCTS_CATEGORIES}`)
         .then((data) => {
           dispatch(addCategories(data));
           dispatch(updateLoading(false));

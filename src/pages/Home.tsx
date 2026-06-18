@@ -10,30 +10,26 @@ import {
 import { Product } from "../models/Product";
 import LatestProducts from "../components/LatestProducts";
 import Banner from "../components/Banner";
-import { API_ENDPOINTS } from "../api";
+import { API_ENDPOINTS, apiFetch } from "../api";
 
 const Home: FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchProducts = () => {
-      fetch(`${API_ENDPOINTS.PRODUCTS}?limit=24`)
-        .then((res) => res.json())
+      apiFetch<{ products: Product[] }>(`${API_ENDPOINTS.PRODUCTS}?limit=24`)
         .then(({ products }) => {
-          const productList: Product[] = [];
-          products.forEach((product: Product) => {
-            productList.push({
-              id: product.id,
-              title: product.title,
-              images: product.images,
-              price: product.price,
-              rating: product.rating,
-              thumbnail: product.thumbnail,
-              description: product.description,
-              category: product.category,
-              discountPercentage: product.discountPercentage,
-            });
-          });
+          const productList: Product[] = products.map((product: Product) => ({
+            id: product.id,
+            title: product.title,
+            images: product.images,
+            price: product.price,
+            rating: product.rating,
+            thumbnail: product.thumbnail,
+            description: product.description,
+            category: product.category,
+            discountPercentage: product.discountPercentage,
+          }));
           dispatch(updateFeaturedList(productList.slice(0, 8)));
           dispatch(updateNewList(productList.slice(8, 16)));
         });

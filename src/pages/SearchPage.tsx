@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { updateLoading } from "../redux/features/homeSlice";
 import SortProducts from "../components/SortProducts";
 import PaginatedProducts from "../components/PaginatedProducts";
-import { API_ENDPOINTS } from "../api";
+import { API_ENDPOINTS, apiFetch } from "../api";
 
 interface Category {
     slug: string;
@@ -34,11 +34,9 @@ const SearchPage: FC = () => {
             setNotFound(false);
 
             try {
-                const productsResponse = await fetch(
+                const data = await apiFetch<{ products: Product[] }>(
                     `${API_ENDPOINTS.PRODUCTS_SEARCH}?q=${encodeURIComponent(query)}`
                 );
-
-                const data = await productsResponse.json();
 
                 const productsData = {
                     ...data,
@@ -51,10 +49,9 @@ const SearchPage: FC = () => {
                     setProducts(productsData.products);
                     setCategoryResults([]);
                 } else {
-                    const categoriesResponse = await fetch(
+                    const categoriesData = await apiFetch<Category[]>(
                         `${API_ENDPOINTS.PRODUCTS_CATEGORIES}`
                     );
-                    const categoriesData = await categoriesResponse.json();
 
                     const matchedCategories = categoriesData.filter(
                         (cat: Category) =>

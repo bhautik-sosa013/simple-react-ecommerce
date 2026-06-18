@@ -25,7 +25,7 @@ const SortProducts: FC<Props> = ({ products, onChange }) => {
                 return bPrice - aPrice;
             });
         } else {
-            sorted = sorted.sort((a, b) => a.id - b.id);
+            sorted = sorted.sort((a, b) => a.id.localeCompare(b.id));
         }
 
         onChange(sorted);

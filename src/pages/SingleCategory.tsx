@@ -6,7 +6,7 @@ import { useAppSelector } from "../redux/hooks";
 import { updateLoading } from "../redux/features/homeSlice";
 import SortProducts from "../components/SortProducts"
 import PaginatedProducts from "../components/PaginatedProducts";
-import { API_ENDPOINTS } from "../api";
+import { API_ENDPOINTS, apiFetch } from "../api";
 
 const SingleCategory: FC = () => {
   const dispatch = useAppDispatch();
@@ -18,10 +18,8 @@ const SingleCategory: FC = () => {
   useEffect(() => {
     const fetchProducts = () => {
       dispatch(updateLoading(true));
-      fetch(`${API_ENDPOINTS.PRODUCTS_CATEGORY_ID.replace(":id", slug || "")}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const { products } = data;
+      apiFetch<{ products: Product[] }>(`${API_ENDPOINTS.PRODUCTS_CATEGORY_ID.replace(":id", slug || "")}`)
+        .then(({ products }) => {
           setProductList(products);
           dispatch(updateLoading(false));
         });

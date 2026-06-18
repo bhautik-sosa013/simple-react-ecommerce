@@ -25,14 +25,14 @@ export const cartSlice = createSlice({
         return { ...state, cartItems: updatedItems };
       }
     },
-    removeFromCart: (state, action: PayloadAction<number>) => {
+    removeFromCart: (state, action: PayloadAction<string>) => {
       const { cartItems } = state;
       const updatedItems = cartItems.filter(
         (item) => item.id !== action.payload
       );
       return { ...state, cartItems: updatedItems };
     },
-    reduceFromCart: (state, action: PayloadAction<number>) => {
+    reduceFromCart: (state, action: PayloadAction<string>) => {
       const { cartItems } = state;
       const _item = cartItems.find((item) => item.id === action.payload);
       if (_item?.quantity && _item?.quantity > 1) {

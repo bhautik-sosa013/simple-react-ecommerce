@@ -14,7 +14,7 @@ import useAuth from "../hooks/useAuth";
 import { MdFavoriteBorder } from "react-icons/md";
 import { addToWishlist } from "../redux/features/productSlice";
 import { updateLoading } from "../redux/features/homeSlice";
-import { API_ENDPOINTS } from "../api";
+import { API_ENDPOINTS, apiFetch } from "../api";
 
 const lorem =
   "It is important to take care of the patient, to be followed by the patient, but it will happen at such a time that there is a lot of work and pain. For to come to the smallest detail, no one should practice any kind of work unless he derives some benefit from it. Do not be angry with the pain in the reprimand in the pleasure he wants to be a hair from the pain in the hope that there is no breeding. Unless they are blinded by lust, they do not come forth; they are in fault who abandon their duties and soften their hearts, that is, their labors.";
@@ -38,8 +38,7 @@ const SingleProduct: FC = () => {
   useEffect(() => {
     const fetchProductDetails = () => {
       dispatch(updateLoading(true));
-      fetch(`${API_ENDPOINTS.PRODUCTS_ID.replace(":id", productID || "")}`)
-        .then((res) => res.json())
+      apiFetch<Product>(`${API_ENDPOINTS.PRODUCTS_ID.replace(":id", productID || "")}`)
         .then((data) => {
           const { thumbnail, images, category } = data;
           setProduct(data);
@@ -54,13 +53,9 @@ const SingleProduct: FC = () => {
 
   useEffect(() => {
     const fetchPreferences = (cat: string) => {
-      fetch(`${API_ENDPOINTS.PRODUCTS_CATEGORY_ID.replace(":id", cat)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const _products: Product[] = data.products;
-          const filtered = _products.filter((product) => {
-            if (productID && product.id !== parseInt(productID)) return product;
-          });
+      apiFetch<{ products: Product[] }>(`${API_ENDPOINTS.PRODUCTS_CATEGORY_ID.replace(":id", cat)}`)
+        .then(({ products }) => {
+          const filtered = products.filter((product) => product.id !== productID);
           setSimilar(filtered);
         });
     };
